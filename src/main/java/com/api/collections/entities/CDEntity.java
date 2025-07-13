@@ -11,8 +11,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.FetchType;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.sql.Date;
+import java.util.Collections;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -56,5 +59,17 @@ public class CDEntity extends ItemEntity
     
     @Column(name = "TRACKLIST", nullable = false)
     @OneToMany(fetch = FetchType.EAGER)
-    private List<String> tracklist;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private List<String> tracklist = new ArrayList<String>();
+    
+    public List<String> getTracklist()
+    {
+        return List.copyOf(tracklist);
+    }
+    
+    public void setTracklist(List<String> source)
+    {
+        Collections.copy(tracklist, source);
+    }
 }
