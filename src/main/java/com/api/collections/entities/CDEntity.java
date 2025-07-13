@@ -54,7 +54,8 @@ public class CDEntity extends ItemEntity
     @Column(name = "RELEASE_DATE")
     private Date releaseDate;
     
-    //https://www.baeldung.com/java-jpa-persist-string-list
+    // don't use elem collection, let's make a new object and persist it a more effective way
+    //https://thorben-janssen.com/hibernate-tips-elementcollection/
     /*
     @Column(name = "TRACKLIST", nullable = false)
     @ElementCollection(targetClass = String.class, fetch = FetchType.LAZY)
