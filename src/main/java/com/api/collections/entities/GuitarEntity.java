@@ -18,14 +18,18 @@ import lombok.NoArgsConstructor;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Guitar extends ItemEntity
+public class GuitarEntity extends ItemEntity
 {
     public enum GuitarType 
     {
-        ElectricGuitar,
-        ElectricBass,
-        AccousticGuitar
+        ELECTRIC_GUITAR,
+        ELECTRIC_BASS,
+        ACCOUSTIC_GUITAR
     }
+    
+    @Column(name = "TYPE")
+    @Enumerated(EnumType.STRING)
+    private GuitarType type;
     
     @Column(name = "MAKE", length = MAX_CHARS, nullable = false)
     private String make;
@@ -40,9 +44,5 @@ public class Guitar extends ItemEntity
     private int strings;
     
     @Column(name = "PICKUPS", length = MAX_CHARS)
-    private String pickups;  
-    
-    @Column(name = "TYPE")
-    @Enumerated(EnumType.STRING)
-    private GuitarType type;
+    private String pickups;
 }
