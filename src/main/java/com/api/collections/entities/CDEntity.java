@@ -65,7 +65,10 @@ public class CDEntity extends ItemEntity
     
     public List<String> getTracklist()
     {
-        return List.copyOf(tracklist);
+        ArrayList copy = new ArrayList<String>();
+        Collections.copy(copy, tracklist);
+        
+        return copy;
     }
     
     public void setTracklist(List<String> source)
