@@ -7,7 +7,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
-import jakarta.persistence.ElementCollection;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.FetchType;
 
 import java.util.List;
@@ -54,10 +54,7 @@ public class CDEntity extends ItemEntity
     @Column(name = "RELEASE_DATE")
     private Date releaseDate;
     
-    // don't use elem collection, let's make a new object and persist it a more effective way
-    //https://thorben-janssen.com/hibernate-tips-elementcollection/
-    /*
     @Column(name = "TRACKLIST", nullable = false)
-    @ElementCollection(targetClass = String.class, fetch = FetchType.LAZY)
-    private List<String> tracklist;*/
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<String> tracklist;
 }
