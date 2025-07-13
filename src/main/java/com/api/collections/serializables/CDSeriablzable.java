@@ -8,6 +8,6 @@ package com.api.collections.serializables;
  *
  * @author elang
  */
-public class CDSer {
+public class CDSeriablzable {
     
 }

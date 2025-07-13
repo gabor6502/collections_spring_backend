@@ -1,6 +1,6 @@
 package com.api.collections.serializables;
 
-public abstract class ItemSer
+public abstract class ItemSeriablzable
 {
     
 }

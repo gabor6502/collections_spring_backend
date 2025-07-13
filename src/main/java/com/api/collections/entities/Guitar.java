@@ -1,13 +1,48 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.api.collections.entities;
 
-/**
- *
- * @author elang
- */
-public class Guitar {
+import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table (name = "GUITARS")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Getter
+@Setter
+@NoArgsConstructor
+public class Guitar extends ItemEntity
+{
+    public enum GuitarType 
+    {
+        ElectricGuitar,
+        ElectricBass,
+        AccousticGuitar
+    }
     
+    @Column(name = "MAKE", length = MAX_CHARS, nullable = false)
+    private String make;
+    
+    @Column(name = "MODEL", length = MAX_CHARS, nullable = false)
+    private String model;
+    
+    @Column(name = "SERIAL_NUMBER", length = MAX_CHARS)
+    private String serialNumber; // often has letters
+    
+    @Column(name = "STRINGS")
+    private int strings;
+    
+    @Column(name = "PICKUPS", length = MAX_CHARS)
+    private String pickups;  
+    
+    @Column(name = "TYPE")
+    @Enumerated(EnumType.STRING)
+    private GuitarType type;
 }
