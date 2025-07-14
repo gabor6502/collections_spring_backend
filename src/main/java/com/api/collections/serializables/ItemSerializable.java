@@ -8,12 +8,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public abstract class ItemSerializable implements Serializable
 {   
     private String name;
@@ -34,6 +32,14 @@ public abstract class ItemSerializable implements Serializable
         image = item.getImageBytes();
     }
     
+    public ItemSerializable(Long id, String name, String notes, byte[] image)
+    {
+        this.id = id;
+        this.name = name;
+        this.notes = notes;
+        setImageBytes(image);
+    }
+    
     public byte[] getImageBytes()
     {
         byte[] image_copy = new byte[image.length];
@@ -43,7 +49,7 @@ public abstract class ItemSerializable implements Serializable
         return image_copy;
     }
     
-    public void setImageBytes(byte[] bytes)
+    public final void setImageBytes(byte[] bytes)
     {
         image = new byte[bytes.length]; // new set of bytes (other gets garbage collected)
         
