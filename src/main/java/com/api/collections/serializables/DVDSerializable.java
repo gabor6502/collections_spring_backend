@@ -8,6 +8,6 @@ package com.api.collections.serializables;
  *
  * @author elang
  */
-public class GameSeriablzable {
+public class DVDSerializable {
     
 }
