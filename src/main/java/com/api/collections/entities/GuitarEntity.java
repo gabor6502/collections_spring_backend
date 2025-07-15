@@ -42,7 +42,5 @@ public class GuitarEntity extends ItemEntity
     
     @Column(name = "STRINGS")
     private int strings;
-    
-    @Column(name = "PICKUPS", length = MAX_CHARS)
-    private String pickups;
+
 }
