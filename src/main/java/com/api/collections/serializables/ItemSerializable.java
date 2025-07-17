@@ -1,7 +1,7 @@
 package com.api.collections.serializables;
 
 import com.api.collections.entities.BaseEntity;
-import com.api.collections.entities.ItemEntity;
+import com.api.collections.entities.Item;
 
 import java.time.LocalDate;
 
@@ -20,12 +20,12 @@ public class ItemSerializable extends EntitySerializable
     private LocalDate date;
     private byte [] image;
     
-    public ItemSerializable(ItemEntity item)
+    public ItemSerializable(Item item)
     {
         assignFromItemEntity(item);
     }
 
-    private void assignFromItemEntity(ItemEntity item)
+    private void assignFromItemEntity(Item item)
     {
         setId(item.getId());
         name = item.getName();
@@ -37,13 +37,13 @@ public class ItemSerializable extends EntitySerializable
     @Override
     public void assignFromEntity(BaseEntity entity) 
     {
-        assignFromItemEntity((ItemEntity)entity);
+        assignFromItemEntity((Item)entity);
     }
 
     @Override
-    public ItemEntity toEntity() 
+    public Item toEntity() 
     {
-        return new ItemEntity(getId(), name, notes, date, image);
+        return new Item(getId(), name, notes, date, image);
     }
     
 }

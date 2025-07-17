@@ -1,7 +1,7 @@
 package com.api.collections.serializables;
 
 import com.api.collections.entities.BaseEntity;
-import com.api.collections.entities.CategoryEntity;
+import com.api.collections.entities.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,23 +13,27 @@ public class CategorySerializable extends EntitySerializable
 {
     private String name;
     
-    public CategorySerializable(CategoryEntity category)
+    public CategorySerializable(Category category)
     {
-        super(category.getId());
+        assignFromCategoryEntity(category);
+    }
+    
+    private void assignFromCategoryEntity(Category category)
+    {
+        setId(category.getId());
         name = category.getName();
     }
     
     @Override
     public void assignFromEntity(BaseEntity entity) 
     {
-        setId(entity.getId());
-        name = ((CategoryEntity)(entity)).getName();
+        assignFromCategoryEntity((Category)entity);
     }
 
     @Override
-    public CategoryEntity toEntity() 
+    public Category toEntity() 
     {
-        return new CategoryEntity(getId(), name);
+        return new Category(getId(), name);
     }
     
 }

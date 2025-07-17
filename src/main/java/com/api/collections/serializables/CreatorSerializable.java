@@ -1,7 +1,7 @@
 package com.api.collections.serializables;
 
 import com.api.collections.entities.BaseEntity;
-import com.api.collections.entities.CreatorEntity;
+import com.api.collections.entities.Creator;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,12 +15,12 @@ public class CreatorSerializable extends EntitySerializable
     private String name;
     private String title;
     
-    public CreatorSerializable(CreatorEntity creator)
+    public CreatorSerializable(Creator creator)
     {
         assignFromCreatorEntity(creator);
     }
     
-    private void assignFromCreatorEntity(CreatorEntity creator)
+    private void assignFromCreatorEntity(Creator creator)
     {
         setId(creator.getId());
         name = creator.getName();
@@ -29,12 +29,12 @@ public class CreatorSerializable extends EntitySerializable
     
     @Override
     public void assignFromEntity(BaseEntity entity) {
-        assignFromCreatorEntity((CreatorEntity)entity);
+        assignFromCreatorEntity((Creator)entity);
     }
 
     @Override
-    public BaseEntity toEntity() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Creator toEntity() {
+        return new Creator(getId(), name, title);
     }
     
 }
