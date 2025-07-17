@@ -40,11 +40,16 @@ public class GuitarService extends ItemService
     
     @Override
     @Transactional
-    public GuitarSerializable get(Long id)
+    public GuitarSerializable get(Long id) throws ItemNotFoundException
     {
         GuitarEntity guitar = em.find(GuitarEntity.class, id);
         
-        return guitar == null ? null : new GuitarSerializable(guitar);
+        if (guitar == null)
+        {
+            throw new ItemNotFoundException(id);
+        }
+        
+        return new GuitarSerializable(guitar);
     }
 
     @Override
@@ -62,22 +67,13 @@ public class GuitarService extends ItemService
 
     @Override
     @Transactional
-    public void updateName(Long id, String name) throws CannotUpdateException 
-    {
+    public void updateImage(Long id, byte[] image) throws CannotUpdateException, ItemNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     @Transactional
-    public void updateNotes(Long id, String notes) throws CannotUpdateException 
-    {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    @Transactional
-    public void updateImage(Long id, byte[] image) throws CannotUpdateException 
-    {
+    public void update(ItemSerializable item) throws CannotUpdateException, ItemNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -87,6 +83,5 @@ public class GuitarService extends ItemService
     {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
     
 }
