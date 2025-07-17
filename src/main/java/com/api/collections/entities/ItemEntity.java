@@ -1,40 +1,36 @@
 package com.api.collections.entities;
 
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Basic;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Table;
+
+import java.time.LocalDate;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@MappedSuperclass
+@Entity
+@Table(name = "ITEMS")
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class ItemEntity 
+public class ItemEntity extends BaseEntity
 { 
-    public static final Long BAD_ID = -1l;
-    public static final int MAX_CHARS = 256;
     public static final int MAX_NOTES_CHARS = 500;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    @Setter(AccessLevel.NONE)
-    private Long id;
     
     @Column(name = "NAME", length = MAX_CHARS, nullable = false)
     private String name;
     
     @Column(name = "NOTES", length = MAX_NOTES_CHARS)
     private String notes;
+    
+    @Column(name = "DATE") 
+    private LocalDate date; // can denote date released, manufactured, published, etc.
     
     @Lob
     @Column(name = "IMAGE")
@@ -43,11 +39,12 @@ public abstract class ItemEntity
     @Setter(AccessLevel.NONE)
     private byte[] image;
     
-    public ItemEntity(Long id, String name, String notes, byte [] image)
+    public ItemEntity(Long id, String name, String notes, LocalDate date, byte [] image)
     {
-        this.id = id == null ? BAD_ID : id;
+        super(id);
         this.name = name;
         this.notes = notes;
+        this.date = date;
         System.arraycopy(image, 0, this.image, 0, image.length);
     }
     
