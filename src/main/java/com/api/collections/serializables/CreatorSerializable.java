@@ -1,6 +1,5 @@
 package com.api.collections.serializables;
 
-import com.api.collections.entities.BaseEntity;
 import com.api.collections.entities.Creator;
 
 import lombok.Getter;
@@ -25,16 +24,11 @@ public class CreatorSerializable extends EntitySerializable
         setId(creator.getId());
         name = creator.getName();
         title = creator.getTitle();
-    }
-    
-    @Override
-    public void assignFromEntity(BaseEntity entity) {
-        assignFromCreatorEntity((Creator)entity);
-    }
+    } 
 
     @Override
-    public Creator toEntity() {
+    public Creator toEntity() 
+    {
         return new Creator(getId(), name, title);
     }
-    
 }

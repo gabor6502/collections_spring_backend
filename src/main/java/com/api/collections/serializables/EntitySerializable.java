@@ -15,6 +15,5 @@ public abstract class EntitySerializable implements Serializable
 {
     private Long id;
     
-    public abstract void assignFromEntity(BaseEntity entity);
     public abstract BaseEntity toEntity();
 }

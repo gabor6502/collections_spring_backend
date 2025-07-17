@@ -1,9 +1,12 @@
 package com.api.collections.serializables;
 
-import com.api.collections.entities.BaseEntity;
+import com.api.collections.entities.Category;
+import com.api.collections.entities.Creator;
 import com.api.collections.entities.Item;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +23,9 @@ public class ItemSerializable extends EntitySerializable
     private LocalDate date;
     private byte [] image;
     
+    private List<CategorySerializable> categories = new ArrayList<>();
+    private List<CreatorSerializable> creators = new ArrayList<>();
+    
     public ItemSerializable(Item item)
     {
         assignFromItemEntity(item);
@@ -32,18 +38,37 @@ public class ItemSerializable extends EntitySerializable
         notes = item.getNotes();
         date = item.getDate();
         image = item.getImageBytes();
+        
+        categories.clear();
+        
+        item.getCategories().forEach((cat) -> 
+        {
+            categories.add(new CategorySerializable(cat));
+        });
+        
+        creators.clear();
+        item.getCreators().forEach((creator) -> 
+        {
+            creators.add(new CreatorSerializable(creator));
+        });
     }
-    
-    @Override
-    public void assignFromEntity(BaseEntity entity) 
-    {
-        assignFromItemEntity((Item)entity);
-    }
-
+   
     @Override
     public Item toEntity() 
     {
-        return new Item(getId(), name, notes, date, image);
+        ArrayList<Category> categories_ent = new ArrayList<>();
+        ArrayList<Creator> creators_ent = new ArrayList<>();
+        
+        for (CategorySerializable c : categories)
+        {
+            categories_ent.add(new Category(c.getId(), c.getName()));
+        }
+        for (CreatorSerializable c : creators)
+        {
+            creators_ent.add(new Creator(c.getId(), c.getName(), c.getTitle()));
+        }
+
+        return new Item(getId(), name, notes, date, image, categories_ent, creators_ent);
     }
     
 }

@@ -14,6 +14,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
@@ -29,6 +31,10 @@ import lombok.NoArgsConstructor;
 public class Item implements BaseEntity
 { 
     public static final int MAX_NOTES_CHARS = 500;
+    
+    // arbitrary for now, change to something reasoanble
+    public static final int MAX_CREATORS = 5;
+    public static final int MAX_CATEGORIES = 7;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,25 +57,28 @@ public class Item implements BaseEntity
     @Setter(AccessLevel.NONE)
     private byte[] image;
     
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "CATEGORY_ID")
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private List<Category> categories;
     
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "CREATOR_ID")
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private List<Creator> creators;
     
-    public Item(Long id, String name, String notes, LocalDate date, byte [] image)
+    public Item(Long id, String name, String notes, LocalDate date, byte [] image, 
+            List<Category> categories, List<Creator> creators)
     {
         this.id = id;
         this.name = name;
         this.notes = notes;
         this.date = date;
-        System.arraycopy(image, 0, this.image, 0, image.length);
+        setImageBytes(image);
+        setCategories(categories);
+        setCreators(creators);
     }
     
     public byte[] getImageBytes()
@@ -81,10 +90,39 @@ public class Item implements BaseEntity
         return image_copy;
     }
     
+    public List<Category> getCategories()
+    {
+        return deepCopyList(categories);
+    }
+    
+    public List<Creator> getCreators()
+    {
+        return deepCopyList(creators);
+    }
+    
     public void setImageBytes(byte[] bytes)
     {
         image = new byte[bytes.length]; // new set of bytes (other gets garbage collected)
         
         System.arraycopy(bytes, 0, image, 0, bytes.length);
+    }
+    
+    public void setCategories(List<Category> source)
+    {
+        Collections.copy(categories, source);
+    }
+    
+    public void setCreators(List<Creator> source)
+    {
+        Collections.copy(creators, source);
+    }
+    
+    // -- helper methods --
+    
+    private <T extends BaseEntity> List<T> deepCopyList(List<T> source)
+    {
+        ArrayList<T> target = new ArrayList<>();
+        Collections.copy(target, source);
+        return target;
     }
 }
