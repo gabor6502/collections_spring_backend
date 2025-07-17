@@ -43,4 +43,14 @@ public class GuitarEntity extends ItemEntity
     @Column(name = "STRINGS")
     private int strings;
 
+    public GuitarEntity(String name, String notes, byte [] image,
+            GuitarType type, String make, String model, String serialNumber, int strings)
+    {
+        super(name, notes, image);
+        this.type = type;
+        this.make = make;
+        this.model = model;
+        this.serialNumber = serialNumber;
+        this.strings = strings;
+    }
 }

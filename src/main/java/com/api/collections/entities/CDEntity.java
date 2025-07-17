@@ -13,6 +13,7 @@ import jakarta.persistence.FetchType;
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Collections;
 
 import lombok.AccessLevel;
@@ -62,6 +63,19 @@ public class CDEntity extends ItemEntity
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private List<String> tracklist = new ArrayList<String>();
+    
+    public CDEntity(String name, String notes, byte [] image,
+            Genre genre, RecordingType recordingType, String band, LocalDate releaseDate,
+            List<String> tracklist)
+    {
+        super(name, notes, image);
+        this.genre = genre;
+        this.recordingType = recordingType;
+        this.band = band;
+        this.releaseDate = new Date(releaseDate.toEpochDay());
+        
+        Collections.copy(this.tracklist, tracklist);
+    }
     
     public List<String> getTracklist()
     {

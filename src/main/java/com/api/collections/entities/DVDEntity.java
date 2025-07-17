@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,4 +38,13 @@ public class DVDEntity extends ItemEntity
     
     @Column(name = "RELEASE_DATE")
     private Date releaseDate;
+    
+    public DVDEntity(String name, String notes, byte [] image,
+            EntertainmentType media, int runtime, LocalDate releaseDate)
+    {
+        super(name, notes, image);
+        this.media = media;
+        this.runtime = runtime;
+        this.releaseDate = new Date(releaseDate.toEpochDay());
+    }
 }

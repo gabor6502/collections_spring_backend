@@ -35,4 +35,13 @@ public class GameEntity extends ItemEntity
   
     @Column(name = "RELEASE_YEAR")
     private int releaseYear;
+    
+    public GameEntity(String name, String notes, byte [] image,
+            Medium medium, String console, int releaseYear)
+    {
+        super(name, notes, image);
+        this.medium = medium;
+        this.console = console;
+        this.releaseYear = releaseYear;
+    }
 }

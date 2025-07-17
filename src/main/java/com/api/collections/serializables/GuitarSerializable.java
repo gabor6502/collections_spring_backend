@@ -1,6 +1,7 @@
 package com.api.collections.serializables;
 
 import com.api.collections.entities.GuitarEntity;
+import com.api.collections.entities.GuitarEntity.GuitarType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import lombok.Setter;
 public class GuitarSerializable extends ItemSerializable 
 {
     
-    private String type;
+    private GuitarType type;
     private String make;
     private String model;
     private String serialNumber;
@@ -19,7 +20,7 @@ public class GuitarSerializable extends ItemSerializable
     public GuitarSerializable(GuitarEntity guitar)
     {
         super(guitar);
-        this.type = enumValToString(guitar.getType());
+        this.type = guitar.getType();
         this.make = guitar.getMake();
         this.model = guitar.getModel();
         this.serialNumber = guitar.getSerialNumber();
@@ -27,7 +28,7 @@ public class GuitarSerializable extends ItemSerializable
     }
     
     public GuitarSerializable(Long id, String name, String notes, byte[] image,
-            String type, String make, String model, String serialNumber, int strings)
+            GuitarType type, String make, String model, String serialNumber, int strings)
     {
         super(id, name, notes, image);
         this.type = type;
@@ -36,5 +37,5 @@ public class GuitarSerializable extends ItemSerializable
         this.serialNumber = serialNumber;
         this.strings = strings;
     }
-    
+
 }

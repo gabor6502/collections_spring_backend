@@ -32,7 +32,7 @@ public abstract class ItemSerializable implements Serializable
     
     public ItemSerializable(Long id, String name, String notes, byte[] image)
     {
-        this.id = id;
+        this.id = id == null ? -1l: id;
         this.name = name;
         this.notes = notes;
         setImageBytes(image);
@@ -53,38 +53,5 @@ public abstract class ItemSerializable implements Serializable
         
         System.arraycopy(bytes, 0, image, 0, bytes.length);
     }
-    
-    protected static String enumValToString(Enum e)
-    {
-        String [] tokens = e.name().split("[_]+");
-        String processedToken;
-        String result = "";
-        
-        for (int i = 0; i < tokens.length; i++)
-        {
-            processedToken = tokens[i].charAt(0)+ tokens[i].substring(1, tokens[i].length()).toLowerCase();
-            result += processedToken;
-            
-            if (i < tokens.length - 1)
-            {
-                result += " ";
-            }
-        }
-        
-        return result;
-    }
-    
-    public static <T extends Enum> T stringToEnumVal(Class<Enum> enumClass, String val)
-    {
-        String processedString = val.toUpperCase().replace(' ', '_');
-        
-        try
-        {
-            return (T) Enum.valueOf(enumClass, processedString);
-        }
-        catch (IllegalArgumentException iae)
-        {
-            return null;
-        }
-    }
+
 }

@@ -42,6 +42,14 @@ public abstract class ItemEntity
     @Setter(AccessLevel.NONE)
     private byte[] image;
     
+    public ItemEntity(String name, String notes, byte [] image)
+    {
+        id = -1l;
+        this.name = name;
+        this.notes = notes;
+        System.arraycopy(image, 0, this.image, 0, image.length);
+    }
+    
     public byte[] getImageBytes()
     {
         byte[] image_copy = new byte[image.length];

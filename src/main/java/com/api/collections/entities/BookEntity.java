@@ -9,6 +9,7 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,4 +43,13 @@ public class BookEntity extends ItemEntity
     
     @Column(name = "DATE_PUBLISHED")
     private Date datePublished;
+    
+    public BookEntity(String name, String notes, byte [] image,
+            Genre genre, String author, LocalDate datePublished)
+    {
+        super(name, notes, image);
+        this.genre = genre;
+        this.author = author;
+        this.datePublished = new Date(datePublished.toEpochDay());
+    }
 }
