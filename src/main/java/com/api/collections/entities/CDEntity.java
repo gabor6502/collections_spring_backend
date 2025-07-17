@@ -12,9 +12,8 @@ import jakarta.persistence.FetchType;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Collections;
+import java.time.LocalDate;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -56,7 +55,7 @@ public class CDEntity extends ItemEntity
     private String band;
     
     @Column(name = "RELEASE_DATE")
-    private Date releaseDate;
+    private LocalDate releaseDate;
     
     @Column(name = "TRACKLIST", nullable = false)
     @OneToMany(fetch = FetchType.EAGER)
@@ -64,15 +63,15 @@ public class CDEntity extends ItemEntity
     @Setter(AccessLevel.NONE)
     private List<String> tracklist = new ArrayList<String>();
     
-    public CDEntity(String name, String notes, byte [] image,
+    public CDEntity(Long id, String name, String notes, byte [] image,
             Genre genre, RecordingType recordingType, String band, LocalDate releaseDate,
             List<String> tracklist)
     {
-        super(name, notes, image);
+        super(id, name, notes, image);
         this.genre = genre;
         this.recordingType = recordingType;
         this.band = band;
-        this.releaseDate = new Date(releaseDate.toEpochDay());
+        this.releaseDate = releaseDate;
         
         Collections.copy(this.tracklist, tracklist);
     }

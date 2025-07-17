@@ -37,5 +37,11 @@ public class GuitarSerializable extends ItemSerializable
         this.serialNumber = serialNumber;
         this.strings = strings;
     }
+    
+    @Override
+    public GuitarEntity toEntity()
+    {
+        return new GuitarEntity(getId(), getName(), getNotes(), getImageBytes(), type, make, model, serialNumber, strings);
+    }
 
 }

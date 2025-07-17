@@ -8,7 +8,6 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 import lombok.Getter;
@@ -37,14 +36,14 @@ public class DVDEntity extends ItemEntity
     private int runtime; // in minutes
     
     @Column(name = "RELEASE_DATE")
-    private Date releaseDate;
+    private LocalDate releaseDate;
     
-    public DVDEntity(String name, String notes, byte [] image,
+    public DVDEntity(Long id, String name, String notes, byte [] image,
             EntertainmentType media, int runtime, LocalDate releaseDate)
     {
-        super(name, notes, image);
+        super(id, name, notes, image);
         this.media = media;
         this.runtime = runtime;
-        this.releaseDate = new Date(releaseDate.toEpochDay());
+        this.releaseDate = releaseDate;
     }
 }

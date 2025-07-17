@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public abstract class ItemEntity 
 { 
+    public static final Long BAD_ID = -1l;
     public static final int MAX_CHARS = 256;
     public static final int MAX_NOTES_CHARS = 500;
     
@@ -42,9 +43,9 @@ public abstract class ItemEntity
     @Setter(AccessLevel.NONE)
     private byte[] image;
     
-    public ItemEntity(String name, String notes, byte [] image)
+    public ItemEntity(Long id, String name, String notes, byte [] image)
     {
-        id = -1l;
+        this.id = id == null ? BAD_ID : id;
         this.name = name;
         this.notes = notes;
         System.arraycopy(image, 0, this.image, 0, image.length);

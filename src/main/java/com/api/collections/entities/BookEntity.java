@@ -8,7 +8,6 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 import lombok.Getter;
@@ -42,14 +41,14 @@ public class BookEntity extends ItemEntity
     private String author;
     
     @Column(name = "DATE_PUBLISHED")
-    private Date datePublished;
+    private LocalDate datePublished;
     
-    public BookEntity(String name, String notes, byte [] image,
+    public BookEntity(Long id, String name, String notes, byte [] image,
             Genre genre, String author, LocalDate datePublished)
     {
-        super(name, notes, image);
+        super(id, name, notes, image);
         this.genre = genre;
         this.author = author;
-        this.datePublished = new Date(datePublished.toEpochDay());
+        this.datePublished = datePublished;
     }
 }

@@ -38,6 +38,8 @@ public abstract class ItemSerializable implements Serializable
         setImageBytes(image);
     }
     
+    public abstract ItemEntity toEntity();
+    
     public byte[] getImageBytes()
     {
         byte[] image_copy = new byte[image.length];
