@@ -1,8 +1,8 @@
 package com.api.collections.services.exceptions;
 
-public class CannotInsertException extends Exception
+public class CannotInsertItemException extends Exception
 {
-    public CannotInsertException()
+    public CannotInsertItemException()
     {
         super("Cannot insert that item into the database.");
     }

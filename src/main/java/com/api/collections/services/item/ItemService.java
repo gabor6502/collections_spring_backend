@@ -6,7 +6,7 @@ import com.api.collections.entities.Item;
 import com.api.collections.serializables.CategorySerializable;
 import com.api.collections.serializables.CreatorSerializable;
 import com.api.collections.serializables.ItemSerializable;
-import com.api.collections.services.exceptions.CannotInsertException;
+import com.api.collections.services.exceptions.CannotInsertItemException;
 import com.api.collections.services.exceptions.ItemNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -28,13 +28,13 @@ public class ItemService
     // - CRUD! -
     
     @Transactional
-    public void create(ItemSerializable addMe) throws CannotInsertException
+    public void create(ItemSerializable addMe) throws CannotInsertItemException
     {
         try {
             em.persist(addMe.toEntity());
         } catch (IllegalArgumentException iae)
         {
-            throw new CannotInsertException();
+            throw new CannotInsertItemException();
         }
     }
     
@@ -84,14 +84,20 @@ public class ItemService
     
     // - joined column queries -
     
-    public List<ItemSerializable> getItemsByCreator(Long creatorId)
-    {
-        return null; // TODO
-    }
-    
     public List<ItemSerializable> getItemsOfCategory(Long categoryId)
     {
-        return null; // TODO
+        return
+            em.createQuery("SELECT new ItemSerializable(i) FROM Item i WHERE :catId IN i.categories", ItemSerializable.class)
+              .setParameter("catId", categoryId)
+              .getResultList();
+    }
+    
+    public List<ItemSerializable> getItemsByCreator(Long creatorId)
+    {
+        return
+            em.createQuery("SELECT new ItemSerializable(i) FROM Item i WHERE :creatId IN i.creators", ItemSerializable.class)
+              .setParameter("creatId", creatorId)
+              .getResultList();
     }
     
     // -- helper methods --
@@ -108,7 +114,7 @@ public class ItemService
        
        return findMe;
     }
-    
+    /*
     private List<ItemSerializable> serializeResults(List<Item> items)
     {
         if (items == null)
@@ -124,5 +130,5 @@ public class ItemService
         }
         
         return items_ser;
-    }
+    }*/
 }
