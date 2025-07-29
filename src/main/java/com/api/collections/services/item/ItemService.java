@@ -8,38 +8,34 @@ import com.api.collections.serializables.CreatorSerializable;
 import com.api.collections.serializables.ItemSerializable;
 import com.api.collections.services.exceptions.CannotInsertException;
 import com.api.collections.services.exceptions.ItemNotFoundException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import jakarta.transaction.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ItemService 
 {
 
-    @Autowired
-    private ItemRepository itemRepo;
+    @PersistenceContext
+    protected EntityManager em; // default Flush Type is AUTO, so DB changes flushed before transaction commit and query execution
     
-    // CRUD!
+    // - CRUD! -
     
     @Transactional
     public void create(ItemSerializable addMe) throws CannotInsertException
     {
         try {
-            itemRepo.save(addMe.toEntity());
+            em.persist(addMe.toEntity());
         } catch (IllegalArgumentException iae)
         {
             throw new CannotInsertException();
         }
-    }
-    
-    public List<ItemSerializable> getAll()
-    {
-        return serializeResults(itemRepo.findAll());
     }
     
     public ItemSerializable getItem(Long id) throws ItemNotFoundException
@@ -50,11 +46,8 @@ public class ItemService
     @Transactional
     public void updateItemData(ItemSerializable updated) throws ItemNotFoundException
     {
-        // "When we use findById() to retrieve an entity within a transactional 
-        // method, the returned entity is managed by the persistence provider."
-        //https://www.baeldung.com/spring-data-crud-repository-save#updateInstance
-        //https://www.baeldung.com/hibernate-entity-lifecycle#managed-entity
-        
+
+        // the item found by its ID will be tracked and persisted in the DB by the entity manager as we change it here
         Item item = findItemById(updated.getId());
         
         // update everything but the image, as we have a separate procedure for that and don't need to rewrite the bytes every time
@@ -84,17 +77,36 @@ public class ItemService
     }
     
     @Transactional
-    public void deleteItem(Long id)
+    public void deleteItem(Long id) throws ItemNotFoundException
     {
-        itemRepo.deleteById(id);
+        em.remove(findItemById(id));
+    }
+    
+    // - joined column queries -
+    
+    public List<ItemSerializable> getItemsByCreator(Long creatorId)
+    {
+        return null; // TODO
+    }
+    
+    public List<ItemSerializable> getItemsOfCategory(Long categoryId)
+    {
+        return null; // TODO
     }
     
     // -- helper methods --
     
     private Item findItemById(Long id) throws ItemNotFoundException
     {
-        return itemRepo.findById(id)
-            .orElseThrow(() -> new ItemNotFoundException(id));
+
+       Item findMe = em.find(Item.class, id);
+       
+       if (findMe == null)
+       {
+           throw new ItemNotFoundException(id);
+       }
+       
+       return findMe;
     }
     
     private List<ItemSerializable> serializeResults(List<Item> items)

@@ -81,6 +81,11 @@ public class Item implements BaseEntity
         setCreators(creators);
     }
     
+    public Item(Long id)
+    {
+        this.id = id;
+    }
+    
     public byte[] getImageBytes()
     {
         byte[] image_copy = new byte[image.length];
