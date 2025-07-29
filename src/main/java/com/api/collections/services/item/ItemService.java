@@ -6,11 +6,11 @@ import com.api.collections.entities.Item;
 import com.api.collections.serializables.CategorySerializable;
 import com.api.collections.serializables.CreatorSerializable;
 import com.api.collections.serializables.ItemSerializable;
-import com.api.collections.services.exceptions.CannotInsertItemException;
-import com.api.collections.services.exceptions.ItemNotFoundException;
+import com.api.collections.services.exceptions.cannotInsert.CannotInsertItemException;
+import com.api.collections.services.exceptions.notFound.ItemNotFoundException;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-
 import jakarta.transaction.Transactional;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class ItemService
     @PersistenceContext
     protected EntityManager em; // default Flush Type is AUTO, so DB changes flushed before transaction commit and query execution
     
-    // - CRUD! -
+    // - CRUD -
     
     @Transactional
     public void create(ItemSerializable addMe) throws CannotInsertItemException
