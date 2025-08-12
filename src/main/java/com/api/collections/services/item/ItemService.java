@@ -30,7 +30,8 @@ public class ItemService
     @Transactional
     public void create(ItemSerializable addMe) throws CannotInsertItemException
     {
-        try {
+        try 
+        {
             em.persist(addMe.toEntity());
         } catch (IllegalArgumentException iae)
         {

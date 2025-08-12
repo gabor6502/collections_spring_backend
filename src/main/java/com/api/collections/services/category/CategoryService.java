@@ -1,5 +1,6 @@
 package com.api.collections.services.category;
 
+import com.api.collections.entities.Category;
 import com.api.collections.serializables.CategorySerializable;
 import com.api.collections.services.exceptions.cannotInsert.CannotInsertCategoryException;
 import com.api.collections.services.exceptions.notFound.CategoryNotFoundException;
@@ -22,12 +23,18 @@ public class CategoryService
     @Transactional
     public void create(CategorySerializable creator) throws CannotInsertCategoryException
     {
-        
+        try
+        {
+            em.persist(creator.toEntity());
+        } catch (IllegalArgumentException iae)
+        {
+            throw new CannotInsertCategoryException();
+        }
     }
     
     public CategorySerializable getCategory(Long id) throws CategoryNotFoundException
     {
-        return null;
+        return new CategorySerializable(findCategoryById(id));
     }
     
     @Transactional
@@ -35,5 +42,20 @@ public class CategoryService
     {
         // if no one else is using this category, then we can fully expel it from the DB
         
+    }
+    
+    // -- helper methods --
+    
+    private Category findCategoryById(Long id) throws CategoryNotFoundException
+    {
+
+       Category findMe = em.find(Category.class, id);
+       
+       if (findMe == null)
+       {
+           throw new CategoryNotFoundException(id);
+       }
+       
+       return findMe;
     }
 }
