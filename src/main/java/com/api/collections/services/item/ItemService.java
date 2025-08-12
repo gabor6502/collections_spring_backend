@@ -62,6 +62,9 @@ public class ItemService
         item.setNotes(updated.getNotes());
         item.setDate(updated.getDate());
         
+        // this could be setup differently: instead of adding all at once, compare differences and +/- 
+        // especially if we're going to iterate over the both lists entirely anyway, will be less memory intensive
+        /*
         // hard copy lists
         
         ArrayList<Category> category_ents = new ArrayList<>();
@@ -77,6 +80,8 @@ public class ItemService
             creator_ents.add(new Creator(c.getId(), c.getName(), c.getTitle()));
         }
         item.setCreators(creator_ents);
+        */
+        
     }
     
     @Transactional
