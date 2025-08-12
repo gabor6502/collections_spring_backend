@@ -102,16 +102,16 @@ public class ItemService
     {
         return
             em.createQuery("SELECT new ItemSerializable(i) FROM Item i WHERE :catId IN i.categories", ItemSerializable.class)
-              .setParameter("catId", categoryId)
-              .getResultList();
+                .setParameter("catId", categoryId)
+                .getResultList();
     }
     
     public List<ItemSerializable> getItemsByCreator(Long creatorId)
     {
         return
             em.createQuery("SELECT new ItemSerializable(i) FROM Item i WHERE :creatId IN i.creators", ItemSerializable.class)
-              .setParameter("creatId", creatorId)
-              .getResultList();
+                .setParameter("creatId", creatorId)
+                .getResultList();
     }
     
     // -- helper methods --

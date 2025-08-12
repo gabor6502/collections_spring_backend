@@ -37,6 +37,14 @@ public class CreatorService
         return new CreatorSerializable(findCreatorById(id));
     }
     
+    public CreatorSerializable getCreatorByName(String name)
+    {
+        return 
+            em.createQuery("SELECT new CreatorSerializable(c) FROM Creator c WHERE c.name = :creatName", CreatorSerializable.class)
+                .setParameter("creatName", name)
+                .getSingleResult(); // since name is unique in DB, should be only one result
+    }
+    
     // -- helper methods --
     
     private Creator findCreatorById(Long id) throws CreatorNotFoundException

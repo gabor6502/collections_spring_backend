@@ -37,6 +37,14 @@ public class CategoryService
         return new CategorySerializable(findCategoryById(id));
     }
     
+    public CategorySerializable getCategoryByName(String name)
+    {
+        return 
+            em.createQuery("SELECT new CategorySerializable(c) FROM Category c WHERE c.name = :catName", CategorySerializable.class)
+                .setParameter("catName", name)
+                .getSingleResult(); // since name is unique in DB, should be only one result
+    }
+    
     // -- helper methods --
     
     private Category findCategoryById(Long id) throws CategoryNotFoundException
