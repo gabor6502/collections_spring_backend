@@ -46,7 +46,8 @@ public class ItemService
     
     public List<ItemSerializable> getItemsOfUser()
     {
-        return null; // TODO need to link with user ID in User DB, but need to setup spring security for this
+        // TODO need to link with user ID in User DB, but need to setup spring security for this
+        return null; 
     }
     
     @Transactional
@@ -87,6 +88,11 @@ public class ItemService
     @Transactional
     public void deleteItem(Long id) throws ItemNotFoundException
     {
+        
+        // TODO
+        // if this is the last item using a given creator or catgeroy, those must be deleted as well
+        
+        
         em.remove(findItemById(id));
     }
     

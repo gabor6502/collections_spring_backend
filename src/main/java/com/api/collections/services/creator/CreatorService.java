@@ -18,7 +18,7 @@ public class CreatorService
     @PersistenceContext
     protected EntityManager em; // default Flush Type is AUTO, so DB changes flushed before transaction commit and query execution
     
-    // - CRD -
+    // - CR - 
     
     @Transactional
     public void create(CreatorSerializable addMe) throws CannotInsertCreatorException
@@ -35,13 +35,6 @@ public class CreatorService
     public CreatorSerializable getCategory(Long id) throws CreatorNotFoundException
     {
         return new CreatorSerializable(findCreatorById(id));
-    }
-    
-    @Transactional
-    public void delete(Long id) throws CreatorNotFoundException
-    {
-        // if no one else is using this creator, then we can fully expel it from the DB
-        
     }
     
     // -- helper methods --

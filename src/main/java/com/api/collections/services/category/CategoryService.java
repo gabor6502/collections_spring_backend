@@ -18,7 +18,7 @@ public class CategoryService
     @PersistenceContext
     protected EntityManager em; // default Flush Type is AUTO, so DB changes flushed before transaction commit and query execution
     
-    // - CRD - 
+    // - CR - 
     
     @Transactional
     public void create(CategorySerializable creator) throws CannotInsertCategoryException
@@ -35,13 +35,6 @@ public class CategoryService
     public CategorySerializable getCategory(Long id) throws CategoryNotFoundException
     {
         return new CategorySerializable(findCategoryById(id));
-    }
-    
-    @Transactional
-    public void delete(Long id) throws CategoryNotFoundException
-    {
-        // if no one else is using this category, then we can fully expel it from the DB
-        
     }
     
     // -- helper methods --
