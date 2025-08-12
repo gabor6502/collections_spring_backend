@@ -43,6 +43,11 @@ public class ItemService
         return new ItemSerializable(findItemById(id));
     }
     
+    public List<ItemSerializable> getItemsOfUser()
+    {
+        return null; // TODO need to link with user ID in User DB, but need to setup spring security for this
+    }
+    
     @Transactional
     public void updateItemData(ItemSerializable updated) throws ItemNotFoundException
     {
@@ -50,10 +55,12 @@ public class ItemService
         // the item found by its ID will be tracked and persisted in the DB by the entity manager as we change it here
         Item item = findItemById(updated.getId());
         
-        // update everything but the image, as we have a separate procedure for that and don't need to rewrite the bytes every time
+        // update everything but the image, as we have a separate procedure for that and don't want to rewrite the bytes every time
         item.setName(updated.getName());
         item.setNotes(updated.getNotes());
         item.setDate(updated.getDate());
+        
+        // hard copy lists
         
         ArrayList<Category> category_ents = new ArrayList<>();
         for (CategorySerializable c : updated.getCategories())
@@ -114,21 +121,4 @@ public class ItemService
        
        return findMe;
     }
-    /*
-    private List<ItemSerializable> serializeResults(List<Item> items)
-    {
-        if (items == null)
-        {
-            return null; //right from the get-go, don't do anything if we have nothing to work with
-        }
-        
-        ArrayList<ItemSerializable> items_ser = new ArrayList<>();
-        
-        for(Item i : items)
-        {
-            items_ser.add(new ItemSerializable(i));
-        }
-        
-        return items_ser;
-    }*/
 }
