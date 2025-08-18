@@ -1,19 +1,21 @@
 package com.api.collections.services.item;
 
+import com.api.collections.entities.BaseEntity;
 import com.api.collections.entities.Category;
 import com.api.collections.entities.Creator;
 import com.api.collections.entities.Item;
-import com.api.collections.serializables.CategorySerializable;
-import com.api.collections.serializables.CreatorSerializable;
 import com.api.collections.serializables.ItemSerializable;
 import com.api.collections.services.exceptions.cannotInsert.CannotInsertItemException;
 import com.api.collections.services.exceptions.notFound.ItemNotFoundException;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -93,11 +95,11 @@ public class ItemService
     @Transactional
     public void deleteItem(Long id) throws ItemNotFoundException
     {
+        Item deleteMe = findItemById(id);
         
-        // TODO
-        // if this is the last item using a given creator or catgeroy, those must be deleted as well
-        
-        
+        deleteRelated(deleteMe.getCategories(), "categories");
+        deleteRelated(deleteMe.getCreators(), "creators");
+
         em.remove(findItemById(id));
     }
     
@@ -120,6 +122,47 @@ public class ItemService
     }
     
     // -- helper methods --
+    
+    private <T extends BaseEntity> void deleteRelated(List<T> entities, String listName)
+    {
+        // problem: I'd like to dynamically specify which list (creators or categories)
+        //          that I'm picking from. Could just use string concatenation but that's sketchy...
+        //
+        // solution(s):
+        // trying to use query building below, need to match a given id with the cb.in(item.get(listName)) predicate
+        // -> need to figure out how to match a given creator/category id with the in() clause
+            
+        /*
+        List<Item> inUse;
+        
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Item> cq = cb.createQuery(Item.class);
+        
+        Root<Item> item = cq.from(Item.class);
+        Predicate propertyInList = cb.in(item.get(listName));
+        
+        
+        cb.all(sbqr)
+        
+        for (BaseEntity ent : entities)
+        {
+            // minimum two items using this property are the conditions for it remaining in DB
+            
+            // did someone say sql injection?
+            //inUse = em.createQuery("SELECT i FROM Item i WHERE :creatId IN i."+listName+" LIMIT 2", Item.class)
+            //    .setParameter("creatId", ent.getId())
+            //    .getResultList();
+            
+           // inUse = em.createQuery(cb.in(item.get(listName)))setMaxResults(2).getResultList();
+            
+            // if only 1, it's the item to be deleted that is using it, thus we should delete property too
+            if (inUse.size() == 1)
+            {
+                em.remove((T)ent);
+            }
+        }*/
+        
+    }
     
     private Item findItemById(Long id) throws ItemNotFoundException
     {

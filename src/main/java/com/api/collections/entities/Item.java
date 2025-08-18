@@ -28,13 +28,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Item implements BaseEntity
+public final class Item implements BaseEntity
 { 
     public static final int MAX_NOTES_CHARS = 500;
-    
-    // arbitrary for now, change to something reasoanble
-    public static final int MAX_CREATORS = 5;
-    public static final int MAX_CATEGORIES = 7;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
