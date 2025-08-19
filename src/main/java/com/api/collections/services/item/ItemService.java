@@ -1,19 +1,18 @@
 package com.api.collections.services.item;
 
 import com.api.collections.entities.BaseEntity;
+import com.api.collections.entities.Category;
+import com.api.collections.entities.Creator;
 import com.api.collections.entities.Item;
-import com.api.collections.serializables.CategorySerializable;
 import com.api.collections.serializables.EntitySerializable;
 import com.api.collections.serializables.ItemSerializable;
+import com.api.collections.services.exceptions.NoRelevantQueryException;
 import com.api.collections.services.exceptions.cannotInsert.CannotInsertItemException;
 import com.api.collections.services.exceptions.notFound.ItemNotFoundException;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
@@ -87,9 +86,9 @@ public class ItemService
     public void deleteItem(Long id) throws ItemNotFoundException
     {
         Item deleteMe = findItemById(id);
-        
-        deleteRelated(deleteMe.getCategories(), "categories");
-        deleteRelated(deleteMe.getCreators(), "creators");
+
+        deleteRelated(deleteMe.getCategories());
+        deleteRelated(deleteMe.getCategories());
 
         em.remove(findItemById(id));
     }
@@ -113,46 +112,50 @@ public class ItemService
     }
     
     // -- helper methods --
-    
-    private <T extends BaseEntity> void deleteRelated(List<T> entities, String listName)
+
+    private <T extends BaseEntity> void deleteRelated(List<T> entities)
     {
-        // problem: I'd like to dynamically specify which list (creators or categories)
-        //          that I'm picking from. Could just use string concatenation but that's sketchy...
-        //
-        // solution(s):
-        // trying to use query building below, need to match a given id with the cb.in(item.get(listName)) predicate
-        // -> need to figure out how to match a given creator/category id with the in() clause
-            
-        /*
+        try
+        {
+            _deleteRelated(entities);
+        } catch (NoRelevantQueryException nrqe)
+        {
+            // should probably get a logger going...
+            System.out.println(nrqe);
+        }
+    }
+    
+    private <T extends BaseEntity> void _deleteRelated(List<T> entities) throws NoRelevantQueryException
+    {
         List<Item> inUse;
+        TypedQuery tq;
         
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Item> cq = cb.createQuery(Item.class);
-        
-        Root<Item> item = cq.from(Item.class);
-        Predicate propertyInList = cb.in(item.get(listName));
-        
-        
-        cb.all(sbqr)
+        // not the most elegant solution to dynamically select which list we're checking, but its the safest in the meanwhile
+        if (entities.get(0) instanceof Category)
+        {
+            tq = em.createQuery("SELECT i FROM Item i WHERE :creatId IN i.categories LIMIT 2", Item.class); 
+        }     
+        else if (entities.get(0) instanceof Creator)
+        {
+            tq = em.createQuery("SELECT i FROM Item i WHERE :creatId IN i.creators LIMIT 2", Item.class);
+        }
+        else
+        {
+            throw new NoRelevantQueryException(entities.get(0).getClass());
+        }
         
         for (BaseEntity ent : entities)
         {
+            inUse = tq.setParameter("creatId", ent.getId()).getResultList();
+
             // minimum two items using this property are the conditions for it remaining in DB
-            
-            // did someone say sql injection?
-            //inUse = em.createQuery("SELECT i FROM Item i WHERE :creatId IN i."+listName+" LIMIT 2", Item.class)
-            //    .setParameter("creatId", ent.getId())
-            //    .getResultList();
-            
-           // inUse = em.createQuery(cb.in(item.get(listName)))setMaxResults(2).getResultList();
-            
             // if only 1, it's the item to be deleted that is using it, thus we should delete property too
             if (inUse.size() == 1)
             {
                 em.remove((T)ent);
             }
-        }*/
-        
+        }
+   
     }
     
     private Item findItemById(Long id) throws ItemNotFoundException
