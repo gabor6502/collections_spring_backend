@@ -30,15 +30,18 @@ public class ItemService
     // - CRUD -
     
     @Transactional
-    public void create(ItemSerializable addMe) throws CannotInsertItemException
+    public ItemSerializable create(ItemSerializable addMe) throws CannotInsertItemException
     {
+        Item toAdd = addMe.toEntity();
         try 
         {
-            em.persist(addMe.toEntity());
+            em.persist(toAdd);
         } catch (IllegalArgumentException iae)
         {
             throw new CannotInsertItemException();
         }
+        
+        return new ItemSerializable(toAdd);
     }
     
     public ItemSerializable getItem(Long id) throws ItemNotFoundException
@@ -53,7 +56,7 @@ public class ItemService
     }
     
     @Transactional
-    public void updateItemData(ItemSerializable updated) throws ItemNotFoundException
+    public ItemSerializable updateItemData(ItemSerializable updated) throws ItemNotFoundException
     {
 
         // the item found by its ID will be tracked and persisted in the DB by the entity manager as we change it here
@@ -84,12 +87,17 @@ public class ItemService
         item.setCreators(creator_ents);
         */
         
+        return new ItemSerializable(item);
     }
     
     @Transactional
-    public void updateItemImage(ItemSerializable updated) throws ItemNotFoundException
+    public ItemSerializable updateItemImage(ItemSerializable updated) throws ItemNotFoundException
     {
-        findItemById(updated.getId()).setImageBytes(updated.getImage());
+        Item updateMe = findItemById(updated.getId());
+        
+        updateMe.setImageBytes(updated.getImage());
+        
+        return new ItemSerializable(updateMe);
     }
     
     @Transactional
