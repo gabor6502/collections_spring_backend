@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
@@ -53,15 +54,15 @@ public final class Item implements BaseEntity
     @Setter(AccessLevel.NONE)
     private byte[] image;
     
+    @OrderBy("id ASC")
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "CATEGORY_ID")
-    @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private List<Category> categories;
     
+    @OrderBy("id ASC")
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "CREATOR_ID")
-    @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private List<Creator> creators;
     
@@ -73,8 +74,8 @@ public final class Item implements BaseEntity
         this.notes = notes;
         this.date = date;
         setImageBytes(image);
-        setCategories(categories);
-        setCreators(creators);
+        this.categories = deepCopyList(categories);
+        this.creators = deepCopyList(creators);
     }
     
     public Item(Long id)
@@ -91,31 +92,11 @@ public final class Item implements BaseEntity
         return image_copy;
     }
     
-    public List<Category> getCategories()
-    {
-        return deepCopyList(categories);
-    }
-    
-    public List<Creator> getCreators()
-    {
-        return deepCopyList(creators);
-    }
-    
     public void setImageBytes(byte[] bytes)
     {
         image = new byte[bytes.length]; // new set of bytes (other gets garbage collected)
         
         System.arraycopy(bytes, 0, image, 0, bytes.length);
-    }
-    
-    public void setCategories(List<Category> source)
-    {
-        Collections.copy(categories, source);
-    }
-    
-    public void setCreators(List<Creator> source)
-    {
-        Collections.copy(creators, source);
     }
     
     // -- helper methods --

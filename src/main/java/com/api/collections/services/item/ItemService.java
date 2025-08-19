@@ -66,9 +66,14 @@ public class ItemService
         item.setName(updated.getName());
         item.setNotes(updated.getNotes());
         item.setDate(updated.getDate());
-        
+
         // this could be setup differently: instead of adding all at once, compare differences and +/- 
         // especially if we're going to iterate over the both lists entirely anyway, will be less memory intensive
+        
+        // take advantage of ascending order of these lists when retrieved from DB
+        // enforce ascending order from frontend
+        // soft copy of lists is returned from entity (lombok getter)
+        
         /*
         // hard copy lists
         
