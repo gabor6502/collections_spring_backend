@@ -1,5 +1,6 @@
 package com.api.collections.serializables;
 
+import com.api.collections.entities.BaseEntity;
 import com.api.collections.entities.Category;
 import com.api.collections.entities.Creator;
 import com.api.collections.entities.Item;
@@ -70,5 +71,5 @@ public class ItemSerializable extends EntitySerializable
 
         return new Item(getId(), name, notes, date, image, categories_ent, creators_ent);
     }
-    
+
 }

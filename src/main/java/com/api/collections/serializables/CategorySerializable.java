@@ -1,5 +1,6 @@
 package com.api.collections.serializables;
 
+import com.api.collections.entities.BaseEntity;
 import com.api.collections.entities.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

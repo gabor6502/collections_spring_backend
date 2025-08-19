@@ -1,9 +1,9 @@
 package com.api.collections.services.item;
 
 import com.api.collections.entities.BaseEntity;
-import com.api.collections.entities.Category;
-import com.api.collections.entities.Creator;
 import com.api.collections.entities.Item;
+import com.api.collections.serializables.CategorySerializable;
+import com.api.collections.serializables.EntitySerializable;
 import com.api.collections.serializables.ItemSerializable;
 import com.api.collections.services.exceptions.cannotInsert.CannotInsertItemException;
 import com.api.collections.services.exceptions.notFound.ItemNotFoundException;
@@ -67,30 +67,8 @@ public class ItemService
         item.setNotes(updated.getNotes());
         item.setDate(updated.getDate());
 
-        // this could be setup differently: instead of adding all at once, compare differences and +/- 
-        // especially if we're going to iterate over the both lists entirely anyway, will be less memory intensive
-        
-        // take advantage of ascending order of these lists when retrieved from DB
-        // enforce ascending order from frontend
-        // soft copy of lists is returned from entity (lombok getter)
-        
-        /*
-        // hard copy lists
-        
-        ArrayList<Category> category_ents = new ArrayList<>();
-        for (CategorySerializable c : updated.getCategories())
-        {
-            category_ents.add(new Category(c.getId(), c.getName()));
-        }
-        item.setCategories(category_ents);
-        
-        ArrayList<Creator> creator_ents = new ArrayList<>();
-        for (CreatorSerializable c : updated.getCreators())
-        {
-            creator_ents.add(new Creator(c.getId(), c.getName(), c.getTitle()));
-        }
-        item.setCreators(creator_ents);
-        */
+        resolveListDiff(item.getCategories(), updated.getCategories());
+        resolveListDiff(item.getCreators(), updated.getCreators());
         
         return new ItemSerializable(item);
     }
@@ -188,5 +166,57 @@ public class ItemService
        }
        
        return findMe;
+    }
+    
+    /**
+     * resolveListDiff
+     * 
+     * The algorithm works by comparing the IDs of entities at a given 
+     * index/frame, i:
+     * (Given that both arrays are sorted in ascending order)
+     *  - If original[i].id == changes[i].id
+     *      Go to next index, as these are equivalent entities.
+     *  - Else if the id from original[i] is less than the id of changes[i]
+     *      Then remove the item at original[i].
+     *  - Else if the id from original[i] is greater than the id of changes[i]
+     *      Then add changes[i] at index i to original, and go to next frame 
+     *      (i++).
+     * 
+     * An edge case is when the original list becomes or just is smaller than 
+     * the changes list. In this case, when we access the out of bounds index
+     * in original, highest value long is returned as the id of original[i].
+     * This has the effect of adding in whatever is at changes[i] into 
+     * original[i].
+     * 
+     */
+    private static <T extends BaseEntity, U extends EntitySerializable> 
+        void resolveListDiff(List<T> original, List<U> changes)
+    {
+        if (original == null || changes == null)
+        {
+            return;
+        }
+        
+        Long ido, idc; // id of current element in original, changes
+        int i = 0; // index in original and changes (looking at a frame of each)
+        while (i < changes.size())
+        {
+            ido = i < original.size() ? original.get(i).getId() : Long.MAX_VALUE;
+            idc = changes.get(i).getId();
+            
+            if (ido.equals(idc))
+            {
+                i++; // equivalent, so move on
+            }
+            else if (ido < idc)
+            {
+                original.remove(i);
+            }
+            else if (ido > idc)
+            {
+                original.add(i, (T)(changes.get(i).toEntity()));
+                i++;
+            }
+        }
     }
 }

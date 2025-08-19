@@ -14,6 +14,5 @@ import lombok.Setter;
 public abstract class EntitySerializable implements Serializable
 {
     private Long id;
-    
     public abstract BaseEntity toEntity();
 }
