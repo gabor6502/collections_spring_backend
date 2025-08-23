@@ -6,7 +6,11 @@ import com.api.collections.entities.Creator;
 import com.api.collections.entities.Item;
 import com.api.collections.serializables.EntitySerializable;
 import com.api.collections.serializables.ItemSerializable;
+import com.api.collections.services.exceptions.BadIdException;
+import com.api.collections.services.exceptions.NoCategoriesSuppliedException;
+import com.api.collections.services.exceptions.NoCreatorsSuppliedException;
 import com.api.collections.services.exceptions.NoRelevantQueryException;
+import com.api.collections.services.exceptions.NullSerializedException;
 import com.api.collections.services.exceptions.cannotInsert.CannotInsertItemException;
 import com.api.collections.services.exceptions.notFound.ItemNotFoundException;
 
@@ -29,9 +33,10 @@ public class ItemService
     // - CRUD -
     
     @Transactional
-    public ItemSerializable create(ItemSerializable addMe) throws CannotInsertItemException
+    public ItemSerializable create(ItemSerializable addMe) throws CannotInsertItemException, NoCategoriesSuppliedException, NoCreatorsSuppliedException, NullSerializedException, BadIdException
     {
-        Item toAdd = addMe.toEntity();
+        Item toAdd = entityValidationAdapter(addMe);
+        
         try 
         {
             em.persist(toAdd);
@@ -55,9 +60,10 @@ public class ItemService
     }
     
     @Transactional
-    public ItemSerializable updateItemData(ItemSerializable updated) throws ItemNotFoundException
+    public ItemSerializable updateItemData(ItemSerializable updated) throws ItemNotFoundException, NoCategoriesSuppliedException, NoCreatorsSuppliedException, NullSerializedException, BadIdException
     {
-
+        entityValidationAdapter(updated);
+        
         // the item found by its ID will be tracked and persisted in the DB by the entity manager as we change it here
         Item item = findItemById(updated.getId());
         
@@ -65,7 +71,7 @@ public class ItemService
         item.setName(updated.getName());
         item.setNotes(updated.getNotes());
         item.setDate(updated.getDate());
-
+        
         resolveListDiff(item.getCategories(), updated.getCategories());
         resolveListDiff(item.getCreators(), updated.getCreators());
         
@@ -113,6 +119,37 @@ public class ItemService
     
     // -- helper methods --
 
+    /**
+     * entityValidationAdapter
+     * 
+     * Handles business logic related validation and returns an entity from the serialized form.
+     * Given non null ItemSerializable, makes sure lists are non-empty and ID is non-negative.
+     */
+    private Item entityValidationAdapter(ItemSerializable ser) throws NullSerializedException, NoCategoriesSuppliedException, NoCreatorsSuppliedException, BadIdException
+    {
+        if (ser == null)
+        {
+            throw new NullSerializedException();
+        }
+        
+        Item fromSer = ser.toEntity();
+        
+        if (fromSer.getId() == null || fromSer.getId() < 0)
+        {
+            throw new BadIdException();
+        }
+        else if (fromSer.getCategories().isEmpty())
+        {
+            throw new NoCategoriesSuppliedException();
+        }
+        else if (fromSer.getCreators().isEmpty())
+        {
+            throw new NoCreatorsSuppliedException();
+        }
+     
+        return fromSer;
+    }
+    
     private <T extends BaseEntity> void deleteRelated(List<T> entities)
     {
         try
@@ -155,7 +192,6 @@ public class ItemService
                 em.remove((T)ent);
             }
         }
-   
     }
     
     private Item findItemById(Long id) throws ItemNotFoundException
@@ -222,4 +258,5 @@ public class ItemService
             }
         }
     }
+        
 }
