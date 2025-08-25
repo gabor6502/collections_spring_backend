@@ -150,6 +150,11 @@ public class ItemService
         return fromSer;
     }
     
+    private void validateSerialized(ItemSerializable ser)
+    {
+        
+    }
+    
     private <T extends BaseEntity> void deleteRelated(List<T> entities)
     {
         try
